@@ -22,7 +22,7 @@ const currencies = [
   {
     name: 'Euro',
     code: 'EUR',
-    symbol: '$'
+    symbol: '€'
   },
 ];
 
@@ -37,8 +37,8 @@ const cache = new InMemoryCache({
     Query: {
       fields: {
         currencies: {
-          read() {
-            return currencies
+          read(_, {variables}) {
+            return currencies.map(currency => currency.code)
           }
         },
         name: {
@@ -62,7 +62,7 @@ const EXCHANGE_RATES = gql`
     # rates(currency: "USD") {
     #   currency
     # }
-    currencies @client
+    currencies(code: "USD") @client
     name @client
   }
 `;
