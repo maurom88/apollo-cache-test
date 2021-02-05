@@ -23,7 +23,7 @@ const currencies = [
     name: 'Euro',
     code: 'EUR',
     symbol: '€'
-  },
+  }
 ];
 
 const typeDefs = gql`
@@ -37,8 +37,10 @@ const cache = new InMemoryCache({
     Query: {
       fields: {
         currencies: {
-          read(_, {variables}) {
-            return currencies.map(currency => currency.code)
+          read(_, { variables }) {
+            return currencies.map(
+              (currency) => currency.code && variables.currencyCode
+            );
           }
         },
         name: {
@@ -58,22 +60,26 @@ const client = new ApolloClient({
 });
 
 const EXCHANGE_RATES = gql`
-  query GetRates($code: String!) {
+  query GetRates($currencyCode: String!) {
     # rates(currency: "USD") {
     #   currency
     # }
-    currencies(code: "USD") @client
+    currencies(currencyCode: $currencyCode) @client
     name @client
   }
 `;
 
 function ExchangeRates() {
-  const { loading, error, data } = useQuery(EXCHANGE_RATES);
+  const currencyCode = 'USD';
+
+  const { loading, error, data } = useQuery(EXCHANGE_RATES, {
+    variables: { currencyCode }
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  console.log(data.currencies)
+  console.log(data.currencies);
   return <div>{data.name}</div>;
 }
 
