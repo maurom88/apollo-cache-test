@@ -36,6 +36,11 @@ const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
+        currencies: {
+          read() {
+            return currencies
+          }
+        },
         name: {
           read() {
             return currencies[0].name;
@@ -57,6 +62,7 @@ const EXCHANGE_RATES = gql`
     # rates(currency: "USD") {
     #   currency
     # }
+    currencies @client
     name @client
   }
 `;
@@ -67,6 +73,7 @@ function ExchangeRates() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
+  console.log(currencies)
   return <div>{data.name}</div>;
 }
 
