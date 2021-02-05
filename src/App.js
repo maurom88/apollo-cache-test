@@ -38,9 +38,13 @@ const cache = new InMemoryCache({
       fields: {
         currencies: {
           read(_, { variables }) {
-            return currencies.map(
-              (currency) => currency.code && variables.currencyCode
+            return currencies.filter(
+              (currency) => currency.code === variables.currencyCode
             );
+
+            // currencies.map(
+            //   (currency) => currency.code && variables.currencyCode
+            // );
           }
         },
         name: {
@@ -70,7 +74,7 @@ const EXCHANGE_RATES = gql`
 `;
 
 function ExchangeRates() {
-  const currencyCode = 'USD';
+  const currencyCode = 'CAD';
 
   const { loading, error, data } = useQuery(EXCHANGE_RATES, {
     variables: { currencyCode }
