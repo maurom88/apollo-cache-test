@@ -52,7 +52,7 @@ const cache = new InMemoryCache({
 });
 
 const client = new ApolloClient({
-  uri: 'https://48p1r2roz4.sse.codesandbox.io/',
+  // uri: 'https://48p1r2roz4.sse.codesandbox.io/',
   cache,
   typeDefs
 });
@@ -73,7 +73,7 @@ function ExchangeRates() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
-  console.log(currencies)
+  console.log(data.currencies)
   return <div>{data.name}</div>;
 }
 
