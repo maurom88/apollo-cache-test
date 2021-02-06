@@ -84,24 +84,6 @@ const CURRENCIES = gql`
   }
 `;
 
-// function Currencies() {
-//   const currencyCode = 'CAD';
-
-//   const { loading, error, data } = useQuery(CURRENCIES, {
-//     variables: { currencyCode }
-//   });
-
-//   if (loading) return <p>Loading...</p>;
-//   if (error) return <p>Error: {error.message} </p>;
-
-//   console.log(data.currencies);
-//   return (
-//     <div>
-//       {data.name} {data.symbol}
-//     </div>
-//   );
-// }
-
 function AllCurrencies() {
   const { loading, error, data } = useQuery(ALL_CURRENCIES);
 
