@@ -31,6 +31,11 @@ const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
+        allCurrencies: {
+          read() {
+            return currencies
+          }
+        },
         currencies: {
           read(_, { variables }) {
             return currencies.filter(
@@ -45,7 +50,7 @@ const cache = new InMemoryCache({
         },
         symbol: {
           read() {
-            return currencies[0].symbol
+            return currencies[0].symbol;
           }
         }
       }
@@ -56,8 +61,14 @@ const cache = new InMemoryCache({
 // Create new instance of Apollo client
 const client = new ApolloClient({
   // Import cache defined above
-  cache,
+  cache
 });
+
+const ALL_CURRENCIES = gql`
+  query GetAllCurrencies {
+    allCurrencies @client
+  }
+`;
 
 const CURRENCIES = gql`
   query GetCurrency($currencyCode: String!) {
@@ -74,11 +85,25 @@ function Currencies() {
     variables: { currencyCode }
   });
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  const { loading: loadingAll, error: errorAll, data: dataAll } = useQuery(
+    ALL_CURRENCIES
+  );
+
+  if (loading || loadingAll) return <p>Loading...</p>;
+  if (error || errorAll)
+    return (
+      <p>
+        Error: {error.message} || {errorAll.message}
+      </p>
+    );
 
   console.log(data.currencies);
-  return <div>{data.name} {data.symbol}</div>;
+  console.log(dataAll.allCurrencies)
+  return (
+    <div>
+      {data.name} {data.symbol}
+    </div>
+  );
 }
 
 function App() {
