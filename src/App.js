@@ -24,6 +24,11 @@ const currencies = [
     name: 'Euro',
     code: 'EUR',
     symbol: '€'
+  },
+  {
+    name: 'Mexican Peso',
+    code: 'MXN',
+    symbol: '$'
   }
 ];
 
@@ -73,15 +78,18 @@ const CURRENCY = gql`
   }
 `;
 
+// Component that renders a dropdown menu and the name of the selected currency
 function Currency() {
-  const [ selectedCurrency, setSelectedCurrency ] = React.useState(currencyCodes()[0])
+  const [selectedCurrency, setSelectedCurrency] = React.useState(
+    currencyCodes()[0]
+  );
 
   const { loading, error, data } = useQuery(CURRENCY, {
     variables: { currencyCode: selectedCurrency }
   });
 
   function handleChange(event) {
-    setSelectedCurrency(event.target.value)
+    setSelectedCurrency(event.target.value);
   }
 
   if (loading) return <p>Loading...</p>;
@@ -92,7 +100,11 @@ function Currency() {
       {/* Dropdown menu */}
       <form>
         <label htmlFor='Currencies'>Choose a currency: </label>
-        <select name='currencies' value={selectedCurrency} onChange={handleChange}>
+        <select
+          name='currencies'
+          value={selectedCurrency}
+          onChange={handleChange}
+        >
           {currencyCodes().map((currencyCode) => (
             <option key={currencyCode} value={currencyCode}>
               {currencyCode}
@@ -107,6 +119,7 @@ function Currency() {
   );
 }
 
+// Component that renders a list of all currencies
 function AllCurrencies() {
   const { loading, error, data } = useQuery(ALL_CURRENCIES);
 
