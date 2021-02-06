@@ -31,11 +31,13 @@ const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
+        // Return an array of all currencies
         allCurrencies: {
           read() {
-            return currencies
+            return currencies;
           }
         },
+        // Return an array of currencies that match the given code
         currencies: {
           read(_, { variables }) {
             return currencies.filter(
@@ -43,11 +45,13 @@ const cache = new InMemoryCache({
             );
           }
         },
+        // Return the name of the first currency
         name: {
           read() {
             return currencies[0].name;
           }
         },
+        // Return the symbol of the first currency
         symbol: {
           read() {
             return currencies[0].symbol;
@@ -64,12 +68,14 @@ const client = new ApolloClient({
   cache
 });
 
+// Query the allCurrencies field on the client
 const ALL_CURRENCIES = gql`
   query GetAllCurrencies {
     allCurrencies @client
   }
 `;
 
+// Query the currencies, name and symbol field on the client
 const CURRENCIES = gql`
   query GetCurrency($currencyCode: String!) {
     currencies(currencyCode: $currencyCode) @client
@@ -78,30 +84,38 @@ const CURRENCIES = gql`
   }
 `;
 
-function Currencies() {
-  const currencyCode = 'CAD';
+// function Currencies() {
+//   const currencyCode = 'CAD';
 
-  const { loading, error, data } = useQuery(CURRENCIES, {
-    variables: { currencyCode }
-  });
+//   const { loading, error, data } = useQuery(CURRENCIES, {
+//     variables: { currencyCode }
+//   });
 
-  const { loading: loadingAll, error: errorAll, data: dataAll } = useQuery(
-    ALL_CURRENCIES
-  );
+//   if (loading) return <p>Loading...</p>;
+//   if (error) return <p>Error: {error.message} </p>;
 
-  if (loading || loadingAll) return <p>Loading...</p>;
-  if (error || errorAll)
-    return (
-      <p>
-        Error: {error.message} || {errorAll.message}
-      </p>
-    );
+//   console.log(data.currencies);
+//   return (
+//     <div>
+//       {data.name} {data.symbol}
+//     </div>
+//   );
+// }
 
-  console.log(data.currencies);
-  console.log(dataAll.allCurrencies)
+function AllCurrencies() {
+  const { loading, error, data } = useQuery(ALL_CURRENCIES);
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message} </p>;
+
+  const allCurrencies = data.allCurrencies;
   return (
     <div>
-      {data.name} {data.symbol}
+      {allCurrencies.map((currency) => (
+        <p key={currency.code}>
+          {currency.name} {currency.code} {currency.symbol}{' '}
+        </p>
+      ))}
     </div>
   );
 }
@@ -111,7 +125,7 @@ function App() {
     <ApolloProvider client={client}>
       <div>
         <h2>My first Apollo App</h2>
-        <Currencies />
+        <AllCurrencies />
       </div>
     </ApolloProvider>
   );
