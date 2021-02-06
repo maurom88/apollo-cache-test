@@ -63,12 +63,10 @@ const ALL_CURRENCIES = gql`
   }
 `;
 
-// Query the currencies, name and symbol field on the client
+// Query a currencies from the cient to return one that matches the give currency code
 const CURRENCY = gql`
   query GetCurrency($currencyCode: String!) {
     currency(currencyCode: $currencyCode) @client
-    # name @client
-    # symbol @client
   }
 `;
 function Currency() {
