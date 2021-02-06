@@ -9,36 +9,38 @@ import {
   makeVar
 } from '@apollo/client';
 
+// Define list of currencies
 const currencies = [
   {
     name: 'American Dollar',
     code: 'USD',
     symbol: '$',
-    visible: true,
+    visible: true
   },
   {
     name: 'Canadian Dollar',
     code: 'CAD',
     symbol: '$',
-    visible: true,
+    visible: true
   },
   {
     name: 'Euro',
     code: 'EUR',
     symbol: '€',
-    visible: false,
+    visible: false
   },
   {
     name: 'Mexican Peso',
     code: 'MXN',
     symbol: '$',
-    visible: true,
+    visible: true
   }
 ];
 
+// Create currencyCodes reactive variable (empty array)
 const currencyCodes = makeVar([]);
 
-// Define local type policies
+// Define local type policies in cache
 const cache = new InMemoryCache({
   typePolicies: {
     Query: {
@@ -75,7 +77,7 @@ const ALL_CURRENCIES = gql`
   }
 `;
 
-// Query a currencies from the cient to return one that matches the give currency code
+// Query a currencies from the cient to return one that matches the given currency code
 const CURRENCY = gql`
   query GetCurrency($currencyCode: String!) {
     currency(currencyCode: $currencyCode) @client
@@ -84,14 +86,17 @@ const CURRENCY = gql`
 
 // Component that renders a dropdown menu and the name of the selected currency
 function Currency() {
+  // Hook to determine selected element from the dropdown menu
   const [selectedCurrency, setSelectedCurrency] = React.useState(
     currencyCodes()[0]
   );
 
+  // Run query with selected currency code set as variable
   const { loading, error, data } = useQuery(CURRENCY, {
     variables: { currencyCode: selectedCurrency }
   });
 
+  // Change state of selectedElement (clicked element from dropdown menu)
   function handleChange(event) {
     setSelectedCurrency(event.target.value);
   }
@@ -109,6 +114,7 @@ function Currency() {
           value={selectedCurrency}
           onChange={handleChange}
         >
+          {/* For each element in the currencyCodes reactive variable array, create an option in the menu displaying the value of the currency code */}
           {currencyCodes().map((currencyCode) => (
             <option key={currencyCode} value={currencyCode}>
               {currencyCode}
@@ -118,6 +124,7 @@ function Currency() {
         <br />
         <br />
       </form>
+      {/* Display selected currency returned by query */}
       <p>Selected currency: {data.currency[0].name}</p>
     </div>
   );
@@ -130,7 +137,7 @@ function AllCurrencies() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message} </p>;
 
-  // Add all currency codes to reactive variable currencyCodes
+  // Add all currency codes into reactive variable currencyCodes
   currencyCodes(
     data.allCurrencies.map((currency) => {
       return currency.code;
@@ -138,13 +145,16 @@ function AllCurrencies() {
   );
 
   const allCurrencies = data.allCurrencies;
+
   return (
     <div>
-      {allCurrencies.map((currency) => (
-        currency.visible ? <p key={currency.code}>
-          {currency.name} {currency.code} {currency.symbol}{' '}
-        </p> : null
-      ))}
+      {allCurrencies.map((currency) =>
+        currency.visible ? (
+          <p key={currency.code}>
+            {currency.name} {currency.code} {currency.symbol}{' '}
+          </p>
+        ) : null
+      )}
     </div>
   );
 }
