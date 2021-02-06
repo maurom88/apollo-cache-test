@@ -38,25 +38,13 @@ const cache = new InMemoryCache({
           }
         },
         // Return an array of currencies that match the given code
-        currencies: {
+        currency: {
           read(_, { variables }) {
             return currencies.filter(
               (currency) => currency.code === variables.currencyCode
             );
           }
         },
-        // Return the name of the first currency
-        name: {
-          read() {
-            return currencies[0].name;
-          }
-        },
-        // Return the symbol of the first currency
-        symbol: {
-          read() {
-            return currencies[0].symbol;
-          }
-        }
       }
     }
   }
@@ -76,13 +64,23 @@ const ALL_CURRENCIES = gql`
 `;
 
 // Query the currencies, name and symbol field on the client
-const CURRENCIES = gql`
+const CURRENCY = gql`
   query GetCurrency($currencyCode: String!) {
-    currencies(currencyCode: $currencyCode) @client
-    name @client
-    symbol @client
+    currency(currencyCode: $currencyCode) @client
+    # name @client
+    # symbol @client
   }
 `;
+function Currency() {
+  const { loading, error, data } = useQuery(CURRENCY, {variables: {currencyCode: "CAD"}});
+
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message} </p>;
+
+  const currency = data.currency[0];
+
+  return <div>{currency.name}</div>;
+}
 
 function AllCurrencies() {
   const { loading, error, data } = useQuery(ALL_CURRENCIES);
@@ -108,6 +106,8 @@ function App() {
       <div>
         <h2>My first Apollo App</h2>
         <AllCurrencies />
+        <hr />
+        <Currency />
       </div>
     </ApolloProvider>
   );
