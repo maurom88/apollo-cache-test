@@ -13,22 +13,26 @@ const currencies = [
   {
     name: 'American Dollar',
     code: 'USD',
-    symbol: '$'
+    symbol: '$',
+    visible: true,
   },
   {
     name: 'Canadian Dollar',
     code: 'CAD',
-    symbol: '$'
+    symbol: '$',
+    visible: true,
   },
   {
     name: 'Euro',
     code: 'EUR',
-    symbol: '€'
+    symbol: '€',
+    visible: false,
   },
   {
     name: 'Mexican Peso',
     code: 'MXN',
-    symbol: '$'
+    symbol: '$',
+    visible: true,
   }
 ];
 
@@ -137,9 +141,9 @@ function AllCurrencies() {
   return (
     <div>
       {allCurrencies.map((currency) => (
-        <p key={currency.code}>
+        currency.visible ? <p key={currency.code}>
           {currency.name} {currency.code} {currency.symbol}{' '}
-        </p>
+        </p> : null
       ))}
     </div>
   );
