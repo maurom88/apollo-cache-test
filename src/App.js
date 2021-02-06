@@ -26,12 +26,7 @@ const currencies = [
   }
 ];
 
-const typeDefs = gql`
-  extend type Query {
-    name: String
-  }
-`;
-
+// Define local type policies
 const cache = new InMemoryCache({
   typePolicies: {
     Query: {
@@ -41,10 +36,6 @@ const cache = new InMemoryCache({
             return currencies.filter(
               (currency) => currency.code === variables.currencyCode
             );
-
-            // currencies.map(
-            //   (currency) => currency.code && variables.currencyCode
-            // );
           }
         },
         name: {
@@ -57,26 +48,23 @@ const cache = new InMemoryCache({
   }
 });
 
+// Create new instance of Apollo client
 const client = new ApolloClient({
-  // uri: 'https://48p1r2roz4.sse.codesandbox.io/',
+  // Import cache defined above
   cache,
-  typeDefs
 });
 
-const EXCHANGE_RATES = gql`
-  query GetRates($currencyCode: String!) {
-    # rates(currency: "USD") {
-    #   currency
-    # }
+const CURRENCIES = gql`
+  query GetCurrency($currencyCode: String!) {
     currencies(currencyCode: $currencyCode) @client
     name @client
   }
 `;
 
-function ExchangeRates() {
+function Currencies() {
   const currencyCode = 'CAD';
 
-  const { loading, error, data } = useQuery(EXCHANGE_RATES, {
+  const { loading, error, data } = useQuery(CURRENCIES, {
     variables: { currencyCode }
   });
 
@@ -92,7 +80,7 @@ function App() {
     <ApolloProvider client={client}>
       <div>
         <h2>My first Apollo App</h2>
-        <ExchangeRates />
+        <Currencies />
       </div>
     </ApolloProvider>
   );
