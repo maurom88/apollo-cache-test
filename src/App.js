@@ -72,10 +72,17 @@ const CURRENCY = gql`
     currency(currencyCode: $currencyCode) @client
   }
 `;
+
 function Currency() {
+  const [ selectedCurrency, setSelectedCurrency ] = React.useState(currencyCodes()[0])
+
   const { loading, error, data } = useQuery(CURRENCY, {
-    variables: { currencyCode: currencyCodes()[1] }
+    variables: { currencyCode: selectedCurrency }
   });
+
+  function handleChange(event) {
+    setSelectedCurrency(event.target.value)
+  }
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message} </p>;
@@ -83,9 +90,9 @@ function Currency() {
   return (
     <div>
       {/* Dropdown menu */}
-      <form onSubmit={(event) => event.preventDefault}>
+      <form>
         <label htmlFor='Currencies'>Choose a currency: </label>
-        <select name='currencies'>
+        <select name='currencies' value={selectedCurrency} onChange={handleChange}>
           {currencyCodes().map((currencyCode) => (
             <option key={currencyCode} value={currencyCode}>
               {currencyCode}
@@ -94,8 +101,8 @@ function Currency() {
         </select>
         <br />
         <br />
-        <input type='submit' value='Submit' />
       </form>
+      <p>Selected currency: {data.currency[0].name}</p>
     </div>
   );
 }
