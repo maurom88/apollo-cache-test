@@ -5,7 +5,8 @@ import {
   ApolloClient,
   InMemoryCache,
   useQuery,
-  gql
+  gql,
+  makeVar
 } from '@apollo/client';
 
 const currencies = [
@@ -26,6 +27,8 @@ const currencies = [
   }
 ];
 
+const currencyCodes = makeVar([]);
+
 // Define local type policies
 const cache = new InMemoryCache({
   typePolicies: {
@@ -44,7 +47,7 @@ const cache = new InMemoryCache({
               (currency) => currency.code === variables.currencyCode
             );
           }
-        },
+        }
       }
     }
   }
@@ -70,14 +73,31 @@ const CURRENCY = gql`
   }
 `;
 function Currency() {
-  const { loading, error, data } = useQuery(CURRENCY, {variables: {currencyCode: "CAD"}});
+  const { loading, error, data } = useQuery(CURRENCY, {
+    variables: { currencyCode: currencyCodes()[1] }
+  });
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message} </p>;
 
-  const currency = data.currency[0];
-
-  return <div>{currency.name}</div>;
+  return (
+    <div>
+      {/* Dropdown menu */}
+      <form onSubmit={(event) => event.preventDefault}>
+        <label htmlFor='Currencies'>Choose a currency: </label>
+        <select name='currencies'>
+          {currencyCodes().map((currencyCode) => (
+            <option key={currencyCode} value={currencyCode}>
+              {currencyCode}
+            </option>
+          ))}
+        </select>
+        <br />
+        <br />
+        <input type='submit' value='Submit' />
+      </form>
+    </div>
+  );
 }
 
 function AllCurrencies() {
@@ -85,6 +105,13 @@ function AllCurrencies() {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message} </p>;
+
+  // Add all currency codes to reactive variable currencyCodes
+  currencyCodes(
+    data.allCurrencies.map((currency) => {
+      return currency.code;
+    })
+  );
 
   const allCurrencies = data.allCurrencies;
   return (
