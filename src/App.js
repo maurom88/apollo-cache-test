@@ -42,6 +42,11 @@ const cache = new InMemoryCache({
           read() {
             return currencies[0].name;
           }
+        },
+        symbol: {
+          read() {
+            return currencies[0].symbol
+          }
         }
       }
     }
@@ -58,6 +63,7 @@ const CURRENCIES = gql`
   query GetCurrency($currencyCode: String!) {
     currencies(currencyCode: $currencyCode) @client
     name @client
+    symbol @client
   }
 `;
 
@@ -72,7 +78,7 @@ function Currencies() {
   if (error) return <p>Error: {error.message}</p>;
 
   console.log(data.currencies);
-  return <div>{data.name}</div>;
+  return <div>{data.name} {data.symbol}</div>;
 }
 
 function App() {
