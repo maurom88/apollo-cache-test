@@ -31,7 +31,7 @@ const currencies = [
 // Create array of currency codes from currencies
 const currencyCodes = currencies.map((currency) => {
   return currency.code;
-})
+});
 
 // Create allCurrenciesVar reactive variable
 export const allCurrenciesVar = makeVar(currencies);

@@ -9,9 +9,9 @@ import { cache } from './cache';
 import Currency from './components/Currency';
 import AllCurrencies from './components/AllCurrencies';
 import CurrencyCodes from './components/Currencycodes';
-import AddCurrency from './components/AddCurrency'
+import AddCurrency from './components/AddCurrency';
 
-// Create new instance of Apollo client 
+// Create new instance of Apollo client
 const client = new ApolloClient({
   // Pass cache to Apollo Client
   cache
