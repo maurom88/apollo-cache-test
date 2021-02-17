@@ -1,68 +1,8 @@
 import './App.css';
 import React from 'react';
-import {
-  ApolloProvider,
-  ApolloClient,
-  InMemoryCache,
-  useQuery,
-  gql,
-  makeVar
-} from '@apollo/client';
+import { ApolloProvider, ApolloClient, useQuery, gql } from '@apollo/client';
 
-// Define list of currencies
-const currencies = [
-  {
-    name: 'American Dollar',
-    code: 'USD',
-    symbol: '$',
-    visible: true
-  },
-  {
-    name: 'Canadian Dollar',
-    code: 'CAD',
-    symbol: '$',
-    visible: true
-  },
-  {
-    name: 'Euro',
-    code: 'EUR',
-    symbol: '€',
-    visible: false
-  },
-  {
-    name: 'Mexican Peso',
-    code: 'MXN',
-    symbol: '$',
-    visible: true
-  }
-];
-
-// Create currencyCodes reactive variable (empty array)
-const currencyCodes = makeVar([]);
-
-// Define local type policies in cache
-const cache = new InMemoryCache({
-  typePolicies: {
-    Query: {
-      fields: {
-        // Return an array of all currencies
-        allCurrencies: {
-          read() {
-            return currencies;
-          }
-        },
-        // Return an array of currencies that match the given code
-        currency: {
-          read(_, { variables }) {
-            return currencies.filter(
-              (currency) => currency.code === variables.currencyCode
-            );
-          }
-        }
-      }
-    }
-  }
-});
+import { cache, currencyCodesVar } from './cache';
 
 // Create new instance of Apollo client
 const client = new ApolloClient({
@@ -88,7 +28,7 @@ const CURRENCY = gql`
 function Currency() {
   // Hook to determine selected element from the dropdown menu
   const [selectedCurrency, setSelectedCurrency] = React.useState(
-    currencyCodes()[0]
+    currencyCodesVar()[0]
   );
 
   // Run query with selected currency code set as variable
@@ -114,8 +54,8 @@ function Currency() {
           value={selectedCurrency}
           onChange={handleChange}
         >
-          {/* For each element in the currencyCodes reactive variable array, create an option in the menu displaying the value of the currency code */}
-          {currencyCodes().map((currencyCode) => (
+          {/* For each element in the currencyCodesVar reactive variable array, create an option in the menu displaying the value of the currency code */}
+          {currencyCodesVar().map((currencyCode) => (
             <option key={currencyCode} value={currencyCode}>
               {currencyCode}
             </option>
@@ -137,8 +77,8 @@ function AllCurrencies() {
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message} </p>;
 
-  // Add all currency codes into reactive variable currencyCodes
-  currencyCodes(
+  // Add all currency codes into reactive variable currencyCodesVar
+  currencyCodesVar(
     data.allCurrencies.map((currency) => {
       return currency.code;
     })
