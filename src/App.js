@@ -6,6 +6,7 @@ import { cache } from './cache';
 
 import Currency from './components/Currency';
 import AllCurrencies from './components/AllCurrencies';
+import CurrencyCodes from './components/Currencycodes';
 
 // Create new instance of Apollo client
 const client = new ApolloClient({
@@ -21,6 +22,8 @@ function App() {
         <AllCurrencies />
         <hr />
         <Currency />
+        <hr />
+        <CurrencyCodes />
       </div>
     </ApolloProvider>
   );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { gql, useQuery, useReactiveVar } from '@apollo/client';
 
 import { currencyCodesVar } from '../cache';
 
@@ -12,9 +12,11 @@ const CURRENCY_QUERY = gql`
 
 // Component that renders a dropdown menu and the name of the selected currency
 export default function Currency() {
+  // useReactiveVar is needed to rerender component if currencyCodesVar is updated
+  const currencyCodes = useReactiveVar(currencyCodesVar);
   // Hook to determine selected element from the dropdown menu
   const [selectedCurrency, setSelectedCurrency] = React.useState(
-    currencyCodesVar()[0]
+    currencyCodes[0]
   );
 
   // Run query with selected currency code set as variable
@@ -40,8 +42,8 @@ export default function Currency() {
           value={selectedCurrency}
           onChange={handleChange}
         >
-          {/* For each element in the currencyCodesVar reactive variable array, create an option in the menu displaying the value of the currency code */}
-          {currencyCodesVar().map((currencyCode) => (
+          {/* For each element in the currencyCodes reactive variable array, create an option in the menu displaying the value of the currency code */}
+          {currencyCodes.map((currencyCode) => (
             <option key={currencyCode} value={currencyCode}>
               {currencyCode}
             </option>
