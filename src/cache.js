@@ -49,6 +49,11 @@ export const cache = new InMemoryCache({
               (currency) => currency.code === variables.currencyCode
             );
           }
+        },
+        currencyCodes: {
+          read() {
+            return currencyCodesVar()
+          }
         }
       }
     }
