@@ -28,10 +28,15 @@ const currencies = [
   }
 ];
 
+// Create array of currency codes from currencies
+const currencyCodes = currencies.map((currency) => {
+  return currency.code;
+})
+
 // Create allCurrenciesVar reactive variable
-export const allCurrenciesVar = makeVar(currencies)
+export const allCurrenciesVar = makeVar(currencies);
 // Create currencyCodesVar reactive variable (empty array)
-export const currencyCodesVar = makeVar([]);
+export const currencyCodesVar = makeVar(currencyCodes);
 
 // Define local type policies in cache
 export const cache = new InMemoryCache({
@@ -47,7 +52,7 @@ export const cache = new InMemoryCache({
         // Return an array of currencies that match the given code
         currency: {
           read(_, { variables }) {
-            return currencies.filter(
+            return allCurrenciesVar().filter(
               (currency) => currency.code === variables.currencyCode
             );
           }
@@ -55,10 +60,7 @@ export const cache = new InMemoryCache({
         // Return a list of currency codes defined in a currencyCodesVar reactive variable
         currencyCodes: {
           read() {
-            const currencyCodes = currencies.map((currency) => {
-              return currency.code;
-            });
-            return currencyCodesVar(currencyCodes);
+            return currencyCodesVar();
           }
         }
       }

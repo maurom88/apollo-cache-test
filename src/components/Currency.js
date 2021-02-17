@@ -19,6 +19,9 @@ export default function Currency() {
     currencyCodes[0]
   );
 
+    console.log(currencyCodes)
+    console.log(selectedCurrency)
+
   // Run query with selected currency code set as variable
   const { loading, error, data } = useQuery(CURRENCY_QUERY, {
     variables: { currencyCode: selectedCurrency }
