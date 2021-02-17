@@ -53,7 +53,9 @@ export default function Currency() {
         <br />
       </form>
       {/* Display selected currency returned by query */}
-      <p>Selected currency: {data.currency[0].name}</p>
+      {data && data.currency[0] ? (
+        <p>Selected currency: {data.currency[0].name}</p>
+      ) : <p>No selected currency</p>}
     </div>
   );
 }

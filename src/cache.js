@@ -28,7 +28,9 @@ const currencies = [
   }
 ];
 
-// Create currencyCodes reactive variable (empty array)
+// Create allCurrenciesVar reactive variable
+export const allCurrenciesVar = makeVar(currencies)
+// Create currencyCodesVar reactive variable (empty array)
 export const currencyCodesVar = makeVar([]);
 
 // Define local type policies in cache
@@ -39,7 +41,7 @@ export const cache = new InMemoryCache({
         // Return an array of all currencies
         allCurrencies: {
           read() {
-            return currencies;
+            return allCurrenciesVar();
           }
         },
         // Return an array of currencies that match the given code
