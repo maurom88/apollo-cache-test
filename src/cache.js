@@ -50,9 +50,13 @@ export const cache = new InMemoryCache({
             );
           }
         },
+        // Return a list of currency codes defined in a currencyCodesVar reactive variable
         currencyCodes: {
           read() {
-            return currencyCodesVar()
+            const currencyCodes = currencies.map((currency) => {
+              return currency.code;
+            });
+            return currencyCodesVar(currencyCodes);
           }
         }
       }
