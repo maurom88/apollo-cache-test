@@ -2,8 +2,6 @@ import React from 'react';
 
 import { gql, useQuery } from '@apollo/client';
 
-import { currencyCodesVar } from '../cache';
-
 // Query the allCurrencies field on the client
 const ALL_CURRENCIES_QUERY = gql`
   query GetAllCurrencies {
@@ -17,13 +15,6 @@ export default function AllCurrencies() {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message} </p>;
-
-  // Add all currency codes into reactive variable currencyCodesVar
-  currencyCodesVar(
-    data.allCurrencies.map((currency) => {
-      return currency.code;
-    })
-  );
 
   const allCurrencies = data.allCurrencies;
 

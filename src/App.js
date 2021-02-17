@@ -2,14 +2,17 @@ import './App.css';
 import React from 'react';
 import { ApolloProvider, ApolloClient } from '@apollo/client';
 
+// Import cache
 import { cache } from './cache';
 
+// Import components
 import Currency from './components/Currency';
 import AllCurrencies from './components/AllCurrencies';
+import CurrencyCodes from './components/Currencycodes';
 
 // Create new instance of Apollo client
 const client = new ApolloClient({
-  // Import cache defined above
+  // Pass cache to Apollo Client
   cache
 });
 
@@ -21,6 +24,8 @@ function App() {
         <AllCurrencies />
         <hr />
         <Currency />
+        <hr />
+        <CurrencyCodes />
       </div>
     </ApolloProvider>
   );
