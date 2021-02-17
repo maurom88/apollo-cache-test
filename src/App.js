@@ -4,6 +4,8 @@ import { ApolloProvider, ApolloClient, useQuery, gql } from '@apollo/client';
 
 import { cache, currencyCodesVar } from './cache';
 
+import Currency from './components/Currency';
+
 // Create new instance of Apollo client
 const client = new ApolloClient({
   // Import cache defined above
@@ -11,68 +13,15 @@ const client = new ApolloClient({
 });
 
 // Query the allCurrencies field on the client
-const ALL_CURRENCIES = gql`
+const ALL_CURRENCIES_QUERY = gql`
   query GetAllCurrencies {
     allCurrencies @client
   }
 `;
 
-// Query a currencies from the cient to return one that matches the given currency code
-const CURRENCY = gql`
-  query GetCurrency($currencyCode: String!) {
-    currency(currencyCode: $currencyCode) @client
-  }
-`;
-
-// Component that renders a dropdown menu and the name of the selected currency
-function Currency() {
-  // Hook to determine selected element from the dropdown menu
-  const [selectedCurrency, setSelectedCurrency] = React.useState(
-    currencyCodesVar()[0]
-  );
-
-  // Run query with selected currency code set as variable
-  const { loading, error, data } = useQuery(CURRENCY, {
-    variables: { currencyCode: selectedCurrency }
-  });
-
-  // Change state of selectedElement (clicked element from dropdown menu)
-  function handleChange(event) {
-    setSelectedCurrency(event.target.value);
-  }
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message} </p>;
-
-  return (
-    <div>
-      {/* Dropdown menu */}
-      <form>
-        <label htmlFor='Currencies'>Choose a currency: </label>
-        <select
-          name='currencies'
-          value={selectedCurrency}
-          onChange={handleChange}
-        >
-          {/* For each element in the currencyCodesVar reactive variable array, create an option in the menu displaying the value of the currency code */}
-          {currencyCodesVar().map((currencyCode) => (
-            <option key={currencyCode} value={currencyCode}>
-              {currencyCode}
-            </option>
-          ))}
-        </select>
-        <br />
-        <br />
-      </form>
-      {/* Display selected currency returned by query */}
-      <p>Selected currency: {data.currency[0].name}</p>
-    </div>
-  );
-}
-
 // Component that renders a list of all currencies
 function AllCurrencies() {
-  const { loading, error, data } = useQuery(ALL_CURRENCIES);
+  const { loading, error, data } = useQuery(ALL_CURRENCIES_QUERY);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error: {error.message} </p>;
