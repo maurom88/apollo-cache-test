@@ -55,7 +55,9 @@ export default function Currency() {
       {/* Display selected currency returned by query */}
       {data && data.currency[0] ? (
         <p>Selected currency: {data.currency[0].name}</p>
-      ) : <p>No selected currency</p>}
+      ) : (
+        <p>No selected currency</p>
+      )}
     </div>
   );
 }

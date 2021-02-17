@@ -1,9 +1,9 @@
-import React from 'react'
+import React from 'react';
 
 export default function AddCurrency() {
-    return(
-        <div>
-            <p></p>
-        </div>
-    )
+  return (
+    <div>
+      <p></p>
+    </div>
+  );
 }
